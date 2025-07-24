@@ -90,3 +90,31 @@ Use libcurl or Boost.Beast in C++ for HTTP communication.
          |===> Push KPI to AI/ML (AI/ML Thread) --> AI/ML Model
          |
          | Kafka Mgmt (Kafka Thread) - [Future Phase]
+
+Updated:
+
+
+          +---------------------+          +-------------------+
+          |   O1 Termination    |  HTTP    |     AI/ML Engine   |
+          |     Service         |<-------->|                   |
+          +---------^-----------+          +----------^--------+
+                    |                               |
+                    | KPI Stream (JSON)             | KPI Fetch (HTTP GET)
+                    |                               | or Push (HTTP POST)
+                    |                               |
+              +-----+-------------------------------+-----+
+              |                                         |
+              |               RApp                     |
+              |                                         |
+              |  +-------------------+                 |
+              |  | Registration/Comm |<--HTTP client-->|  
+              |  | Module            |                 |
+              |  +--------+----------+                 |
+              |           |                            |
+              |  +--------v----------+        +--------v----------+
+              |  |  Message Queue    |        |  Real-Time DB     |
+              |  | (e.g. 10 Cell FIFO|        |  (e.g. Redis-like)|
+              |  +--------+----------+        +--------+----------+
+              |           |                            |
+              +-----------+----------------------------+
+
