@@ -1,0 +1,27 @@
+RAppTrafficSteering/
+├── CMakeLists.txt
+├── include/
+│   ├── rapp.hpp                    # Main RApp logic
+│   ├── registration.hpp           # Handles registration with O1
+│   ├── kpi_handler.hpp            # Handles KPI stream parsing
+│   ├── db_interface.hpp           # Interface for real-time KPI storage
+│   ├── message_queue.hpp          # Manages FIFO queue for each cell
+│   ├── ai_interface.hpp           # Pull/Push integration with AI/ML
+│   ├── utils.hpp                  # Timestamp, logging utilities
+│   └── types.hpp                  # Structs like KPIData, RegistrationResponse
+├── src/
+│   ├── main.cpp                   # Entry point
+│   ├── rapp.cpp                   # RApp orchestrator logic
+│   ├── registration.cpp           # Sends registration to O1 and parses response ✅
+│   ├── kpi_handler.cpp            # Handles incoming KPI stream data
+│   ├── db_interface.cpp           # Insert/fetch KPI data to/from real-time DB
+│   ├── message_queue.cpp          # Maintains per-cell FIFO
+│   ├── ai_interface.cpp           # HTTP API to/from AI/ML engine
+│   └── utils.cpp                  # Common helper functions
+├── third_party/
+│   └── nlohmann/                  # JSON library
+│   └── cpr/                       # HTTP client library
+├── config/
+│   └── rapp_config.json           # Config with endpoints, RApp ID, KPIs
+├── README.md
+└── build/                         # Build output directory
