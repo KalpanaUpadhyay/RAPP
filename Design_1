@@ -1,0 +1,92 @@
+🔧 Phase 1 RApp Design Summary
+✅ Goals:
+Connect to:
+
+O1 Termination Service (HTTP/Sockets)
+
+AI/ML Engine (HTTP/Sockets)
+
+Register with a unique RApp ID + desired KPIs
+
+Receive and store streaming KPI data
+
+Push or expose data to AI/ML Engine
+
+Internally use 3 threads:
+
+KPI Worker Thread: Handle real-time KPI data storage
+
+AI/ML Thread: Push or serve stored KPI data
+
+Kafka Management Thread: (Future use; placeholder to integrate with InfluxDB / Kafka, for metrics or app control)
+
+🧱 C++ Application Components
+📁 Project Structure (suggested):
+
+rapp_traffic_steering/
+├── main.cpp
+├── thread_worker.hpp / cpp
+├── thread_ai_ml.hpp / cpp
+├── thread_kafka.hpp / cpp
+├── kpi_store.hpp / cpp
+├── http_client.hpp / cpp
+├── config.hpp
+└── CMakeLists.txt
+
+🧠 Design Concepts
+✅ 1. KPI Storage
+Use a thread-safe structure (like std::mutex-guarded std::map<std::string, std::vector<KpiSample>>)
+
+Each KPI sample has: timestamp, value, cell_id, etc.
+
+
+struct KpiSample {
+    std::string kpi_name;
+    std::string cell_id;
+    double value;
+    std::chrono::system_clock::time_point timestamp;
+};
+
+✅ 2. Thread Roles
+🧵 Worker Thread
+Receives incoming KPI JSON (simulated or from socket/HTTP)
+
+Parses and stores it in KpiStore
+
+🧵 AI/ML Thread
+Every X seconds:
+
+Reads current KPIs from KpiStore
+
+Sends to AI/ML service via HTTP POST
+
+🧵 Kafka Management Thread
+Placeholder
+
+Will later integrate Kafka → for now just keep it alive and log periodically
+
+✅ 3. HTTP Registration on Startup
+
+POST /register
+{
+  "rapp_id": "rapp_ts_001",
+  "kpis": ["PRB_Usage", "RSRP", "Throughput_DL"]
+}
+Expected response:
+{
+  "status": "success",
+  "message": "Registered successfully"
+}
+Use libcurl or Boost.Beast in C++ for HTTP communication.
+
+✅ 4. Communication Flow
+
+         +------------------+                +---------------------+
+         |     RApp         |<-------------->| O1 Termination Svc  |
+         |------------------|                +---------------------+
+         | Registration Req |
+         |                  |--> Store KPI JSON (Worker Thread)
+         |
+         |===> Push KPI to AI/ML (AI/ML Thread) --> AI/ML Model
+         |
+         | Kafka Mgmt (Kafka Thread) - [Future Phase]
